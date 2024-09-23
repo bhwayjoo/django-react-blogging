@@ -1,21 +1,33 @@
-import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-const SubdomainSearch = () => {
+import Home from "./pages/Home";
+import Article from "./pages/Article";
+import CreateArticle from "./pages/CreateArticle";
+import EditArticle from "./pages/EditArticle";
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
+import Register from "./pages/Register";
+import VerifyAcount from "./pages/VerifyAcount";
+
+function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-blue-600">
-          Hello, Tailwind CSS!
-        </h1>
-        <p className="mt-4 text-lg text-gray-700">
-          This is a test page to check if Tailwind CSS is working correctly.
-        </p>
-        <button className="mt-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
-          Test Button
-        </button>
-      </div>
-    </div>
+    <Router>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/article/:id" element={<Article />} />
+        <Route path="/create-article" element={<CreateArticle />} />
+        <Route path="/edit-article/:id" element={<EditArticle />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/verifyEmail/:tokenEmail" element={<VerifyAcount />} />
+      </Routes>
+      <Footer />
+    </Router>
   );
-};
+}
 
-export default SubdomainSearch;
+export default App;

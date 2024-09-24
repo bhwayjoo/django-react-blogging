@@ -1,31 +1,26 @@
-import { useEffect, useState } from "react";
-import customAxios from "../services/api";
+import { useSelector } from "react-redux";
+import { articleSelectors } from "../store/selectors/userSelectors";
+import ArticleCard from "../components/article/ArticleCard";
 
 function Home() {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const dataStatue = async () => {
-      try {
-        const response = await customAxios.get("account/userinfo/");
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    dataStatue();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const selector = useSelector(articleSelectors);
+  const articles = selector?.article?.article?.payload || [];
 
   return (
-    <>
-      <div>home</div>
-    </>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">
+        Latest Articles
+      </h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {articles.length ? (
+          articles.map((article) => (
+            <ArticleCard key={article.id} article={article} />
+          ))
+        ) : (
+          <div>No articles found</div>
+        )}
+      </div>
+    </div>
   );
 }
 

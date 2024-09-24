@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'account',
     'article',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -73,6 +74,12 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+     'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',  # For the browsable API
+    ),
+        'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+
 }
 ROOT_URLCONF = 'backend.urls'
 
@@ -104,6 +111,25 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'portfoio',  # Replace with your MongoDB database name
+        'CLIENT': {
+            'host': 'mongodb+srv://bhwayjoo:M3lQ3jz11c6AaHNs@portfoio.rvxy5.mongodb.net/?retryWrites=true&w=majority&appName=portfoio',  # Replace with your alias connection URI or localhost URI
+            'port': 27017,  # Default MongoDB port
+            'username': 'bhwayjoo',  # Replace with MongoDB username (if required)
+            'password': 'M3lQ3jz11c6AaHNs',  # Replace with MongoDB password (if required)
+            'authSource': 'admin',  # Database to authenticate against
+            'authMechanism': 'SCRAM-SHA-1',  # Auth mechanism (optional, depending on your setup)
+        }
+    }
+}
+'''
+
 
 
 # Password validation

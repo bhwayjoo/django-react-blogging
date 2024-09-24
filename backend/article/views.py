@@ -1,12 +1,10 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, filters, status
+from rest_framework.response import Response
+from rest_framework.exceptions import NotFound
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Category, Tag, Article, ArticleContent, Comment
 from .serializers import CategorySerializer, TagSerializer, ArticleSerializer, ArticleContentSerializer, CommentSerializer
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
-from django.db.models import Q
-from rest_framework.exceptions import NotFound
-
+from .filters import ArticleFilter
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
@@ -22,10 +20,13 @@ class ArticleViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filterset_class = ArticleFilter
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['contents__title', 'contents__body']
+    ordering_fields = ['created_at', 'updated_at']
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-        
 
 class ArticleContentViewSet(viewsets.ModelViewSet):
     queryset = ArticleContent.objects.all()
@@ -38,29 +39,33 @@ class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        article_id = self.request.data.get('article')
+        article = Article.objects.get(pk=article_id)
+        serializer.save(user=self.request.user, article=article)
 
-class ArticleManager:
-    permission_classes = [IsAuthenticated]
-    def get(self, article_id):
+# Custom ViewSets for more granular control
+class ArticleManagerViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def retrieve(self, request, pk=None):
         try:
-            article = Article.objects.get(id=article_id)
+            article = Article.objects.get(pk=pk)
             serializer = ArticleSerializer(article)
             return Response(serializer.data)
         except Article.DoesNotExist:
             raise NotFound("Article not found.")
 
-    def create(self, data, user):
-        serializer = ArticleSerializer(data=data)
+    def create(self, request):
+        serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(author=user)
+            serializer.save(author=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def update(self, article_id, data):
+    def update(self, request, pk=None):
         try:
-            article = Article.objects.get(id=article_id)
-            serializer = ArticleSerializer(article, data=data, partial=True)
+            article = Article.objects.get(pk=pk)
+            serializer = ArticleSerializer(article, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -68,36 +73,41 @@ class ArticleManager:
         except Article.DoesNotExist:
             raise NotFound("Article not found.")
 
-    def delete(self, article_id):
+    def destroy(self, request, pk=None):
         try:
-            article = Article.objects.get(id=article_id)
+            article = Article.objects.get(pk=pk)
             article.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Article.DoesNotExist:
             raise NotFound("Article not found.")
 
-class CommentManager:
-    permission_classes = [IsAuthenticated]
 
-    def get(self, comment_id):
+class CommentManagerViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def retrieve(self, request, pk=None):
         try:
-            comment = Comment.objects.get(id=comment_id)
+            comment = Comment.objects.get(pk=pk)
             serializer = CommentSerializer(comment)
             return Response(serializer.data)
         except Comment.DoesNotExist:
             raise NotFound("Comment not found.")
 
-    def create(self, data, user):
-        serializer = CommentSerializer(data=data)
+    def create(self, request):
+        serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=user)
+            article_id = request.data.get('article')
+            article = Article.objects.get(pk=article_id)
+            serializer.save(user=request.user, article=article)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def update(self, comment_id, data):
+    def update(self, request, pk=None):
         try:
-            comment = Comment.objects.get(id=comment_id)
-            serializer = CommentSerializer(comment, data=data, partial=True)
+            comment = Comment.objects.get(pk=pk)
+            if comment.user != request.user:
+                return Response({"detail": "You do not have permission to edit this comment."}, status=status.HTTP_403_FORBIDDEN)
+            serializer = CommentSerializer(comment, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -105,29 +115,12 @@ class CommentManager:
         except Comment.DoesNotExist:
             raise NotFound("Comment not found.")
 
-    def delete(self, comment_id):
+    def destroy(self, request, pk=None):
         try:
-            comment = Comment.objects.get(id=comment_id)
+            comment = Comment.objects.get(pk=pk)
+            if comment.user != request.user:
+                return Response({"detail": "You do not have permission to delete this comment."}, status=status.HTTP_403_FORBIDDEN)
             comment.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Comment.DoesNotExist:
             raise NotFound("Comment not found.")
-
-class ArticleSearchManager:
-    def search(self, tag=None, category=None, keyword=None):
-        queryset = Article.objects.all()
-
-        if tag:
-            queryset = queryset.filter(tags__name=tag)
-
-        if category:
-            queryset = queryset.filter(category__name=category)
-
-        if keyword:
-            queryset = queryset.filter(
-                Q(contents__title__icontains=keyword) |
-                Q(contents__body__icontains=keyword)
-            ).distinct()
-
-        serializer = ArticleSerializer(queryset, many=True)
-        return Response(serializer.data)

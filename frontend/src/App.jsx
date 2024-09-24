@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
+import { Provider } from "react-redux";
 import Home from "./pages/Home";
 import Article from "./pages/Article";
 import CreateArticle from "./pages/CreateArticle";
@@ -12,29 +12,32 @@ import Register from "./pages/Register";
 import VerifyAcount from "./pages/VerifyAcount";
 import ProtectRouter from "./protect/ProtectRouter";
 import LogOutProtect from "./protect/LogOutProtect";
+import { store } from "./store/store";
 
 function App() {
   return (
-    <Router>
-      <Header />
-      <Routes>
-        {/* Use ProtectRouter as an element for a nested route */}
-        <Route element={<ProtectRouter />}>
-          <Route path="/" element={<Home />} />
+    <Provider store={store}>
+      <Router>
+        <Header />
+        <Routes>
+          {/* Use ProtectRouter as an element for a nested route */}
+          <Route element={<ProtectRouter />}>
+            <Route path="/create-article" element={<CreateArticle />} />
+            <Route path="/edit-article/:id" element={<EditArticle />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
+          {/* Use ProtectRouter as an element for a nested route */}
+          <Route element={<LogOutProtect />}>
+            <Route path="/signin" element={<Login />} />
+            <Route path="/signup" element={<Register />} />
+            <Route path="/verifyEmail/:tokenEmail" element={<VerifyAcount />} />
+          </Route>
           <Route path="/article/:id" element={<Article />} />
-          <Route path="/create-article" element={<CreateArticle />} />
-          <Route path="/edit-article/:id" element={<EditArticle />} />
-        </Route>
-        <Route element={<LogOutProtect />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Route>
-
-        <Route path="/verifyEmail/:tokenEmail" element={<VerifyAcount />} />
-      </Routes>
-      <Footer />
-    </Router>
+          <Route path="/" element={<Home />} />
+        </Routes>
+        <Footer />
+      </Router>
+    </Provider>
   );
 }
 

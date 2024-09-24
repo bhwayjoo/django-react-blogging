@@ -11,10 +11,9 @@ function LogOutProtect() {
       try {
         const response = await customAxios.head("account/userinfo/");
         if (response.status === 200) {
-          setConnected(true); // User is authenticated
+          setConnected(checkAuthStatus); // User is authenticated
         }
-      } catch (er) {
-        console.log(er);
+      } catch (e) {
         setConnected(false); // User is not authenticated
       } finally {
         setLoading(false);
@@ -29,7 +28,7 @@ function LogOutProtect() {
   }
 
   // If the user is authenticated (connected), redirect them to /portfolio
-  return !connected ? <Outlet /> : <Navigate to="/portfolio/" />;
+  return !connected ? <Outlet /> : <Navigate to="/" />;
 }
 
 export default LogOutProtect;

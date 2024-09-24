@@ -9,7 +9,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
   const handleGoogleLogin = async (credentialResponse) => {
     setLoading(true);
     setError("");
@@ -59,22 +58,23 @@ const Login = () => {
       setLoading(false);
     }
   };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-800">
-      <div className="w-full max-w-sm p-8 bg-white shadow-lg rounded-lg border border-gray-200 dark:bg-gray-900 dark:border-gray-700">
-        <h2 className="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
+        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
           Login
         </h2>
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded dark:bg-red-900 dark:text-red-200 dark:border-red-800">
+          <div className="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded">
             {error}
           </div>
         )}
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex flex-col mb-5">
+          <div>
             <label
               htmlFor="email"
-              className="text-sm font-medium text-gray-900 dark:text-white mb-2"
+              className="block text-sm font-medium text-gray-700 mb-1"
             >
               Email Address
             </label>
@@ -82,16 +82,16 @@ const Login = () => {
               ref={emailRef}
               id="email"
               type="email"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your email"
               required
             />
           </div>
 
-          <div className="flex flex-col mb-5">
+          <div>
             <label
               htmlFor="password"
-              className="text-sm font-medium text-gray-900 dark:text-white mb-2"
+              className="block text-sm font-medium text-gray-700 mb-1"
             >
               Password
             </label>
@@ -100,7 +100,7 @@ const Login = () => {
                 ref={passwordRef}
                 id="password"
                 type={showPassword ? "text" : "password"}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your password"
                 required
               />
@@ -120,43 +120,41 @@ const Login = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
-                    d={`M${
+                    d={
                       showPassword
-                        ? "5 12a7 7 0 0110-9m5 5a7 7 0 00-10 9m-1.5-6.5A1.5 1.5 0 109 12a1.5 1.5 0 00-1.5-1.5"
-                        : "3 3m0 6a10 10 0 1114.32 0M4.42 4.42a10 10 0 0114.32 0m-1.34 1.34a7 7 0 00-10 9m-2-1a7 7 0 010-10.28"
-                    }`}
+                        ? "M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        : "M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
+                    }
                   />
                 </svg>
               </button>
             </div>
           </div>
 
-          <div className="flex items-start mb-5">
-            <div className="flex items-center h-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
               <input
                 id="remember"
                 type="checkbox"
-                className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
+              <label
+                htmlFor="remember"
+                className="ml-2 block text-sm text-gray-700"
+              >
+                Remember me
+              </label>
             </div>
-            <label
-              htmlFor="remember"
-              className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            <Link
+              to="/portfolio/ForgotPassword"
+              className="text-sm text-blue-600 hover:underline"
             >
-              Remember me
-            </label>
+              Forgot Password?
+            </Link>
           </div>
 
-          <Link
-            to="/portfolio/FrogPassword"
-            className="text-blue-600 hover:underline text-sm"
-          >
-            Forgot Password?
-          </Link>
-          <div className="flex mt-4 justify-center">
-            <GoogleOAuthProvider
-              clientId={import.meta.env.VITE_APP_GOOGLE_CLIENT_ID}
-            >
+          <div className="flex justify-center">
+            <GoogleOAuthProvider clientId="758950335003-oq3fqfojpq4iomq97gadup7kupd5o734.apps.googleusercontent.com">
               <GoogleLogin
                 onSuccess={handleGoogleLogin}
                 onError={() =>
@@ -166,12 +164,11 @@ const Login = () => {
               />
             </GoogleOAuthProvider>
           </div>
+
           <button
             type="submit"
-            className={`w-full py-3 px-4 text-white font-medium rounded-lg text-sm transition-all duration-300 ${
-              loading
-                ? "bg-blue-300 cursor-not-allowed"
-                : "bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            className={`w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
             disabled={loading}
           >

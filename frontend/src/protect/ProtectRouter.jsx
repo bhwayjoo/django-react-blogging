@@ -13,8 +13,8 @@ function ProtectRouter() {
         if (response.status === 200) {
           setConnected(true);
         }
-      } catch (error) {
-        console.log(error);
+        // eslint-disable-next-line no-unused-vars
+      } catch (e) {
         setConnected(false);
       } finally {
         setLoading(false);

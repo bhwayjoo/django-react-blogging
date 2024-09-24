@@ -24,12 +24,22 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'content', 'created_at']
 
 class ArticleSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField()
-    category = CategorySerializer()
-    tags = TagSerializer(many=True)
+    author = serializers.StringRelatedField(read_only=True)
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
     contents = ArticleContentSerializer(many=True)
     comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Article
-        fields = ['id', 'author', 'category', 'tags', 'created_at', 'updated_at', 'contents', 'comments']
+        fields = ['id', 'author', 'category', 'tags', 'created_at', 'updated_at', 'contents','comments']
+
+    def create(self, validated_data):
+        contents_data = validated_data.pop('contents')
+        tags_data = validated_data.pop('tags')
+        article = Article.objects.create(**validated_data)
+        for content_data in contents_data:
+            ArticleContent.objects.create(article=article, **content_data)
+        article.tags.set(tags_data)
+        return article
+    

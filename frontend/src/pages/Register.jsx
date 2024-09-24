@@ -10,6 +10,7 @@ const Register = () => {
   const [nonFieldError, setNonFieldError] = useState("");
   const [recaptchaValue, setRecaptchaValue] = useState(false);
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -58,7 +59,6 @@ const Register = () => {
 
   const onRecaptchaChange = (value) => {
     setRecaptchaValue(value);
-    console.log(recaptchaValue);
   };
 
   const submitForm = async (data) => {
@@ -70,15 +70,14 @@ const Register = () => {
       setLoading(false);
       return;
     }
+
     try {
       await customAxios.post(`/account/register/`, {
         ...data,
         recaptcha: recaptchaValue,
       });
-      console.log("co");
       navigate("/login");
     } catch (error) {
-      console.log(error);
       const errorData = error.response?.data;
       if (errorData) {
         if (errorData.email) {
@@ -95,6 +94,7 @@ const Register = () => {
       setLoading(false);
     }
   };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg border border-gray-200">
@@ -103,13 +103,15 @@ const Register = () => {
         </h2>
         <form onSubmit={handleSubmit(submitForm)} className="space-y-6">
           {nonFieldError && (
-            <div className="text-red-500 text-center mb-4">{nonFieldError}</div>
+            <div className="p-3 bg-red-100 text-red-700 border border-red-300 rounded text-center">
+              {nonFieldError}
+            </div>
           )}
 
-          <div className="flex flex-col mb-5">
+          <div className="flex flex-col">
             <label
               htmlFor="username"
-              className="text-sm font-semibold text-gray-700 mb-2"
+              className="text-sm font-medium text-gray-700 mb-1"
             >
               Username
             </label>
@@ -123,20 +125,20 @@ const Register = () => {
                 },
               })}
               type="text"
-              className="p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter your username"
             />
             {errors.username && (
-              <p className="text-red-500 text-xs mt-1">
+              <p className="mt-1 text-red-500 text-sm">
                 {errors.username.message}
               </p>
             )}
           </div>
 
-          <div className="flex flex-col mb-5">
+          <div className="flex flex-col">
             <label
               htmlFor="email"
-              className="text-sm font-semibold text-gray-700 mb-2"
+              className="text-sm font-medium text-gray-700 mb-1"
             >
               Email
             </label>
@@ -150,20 +152,20 @@ const Register = () => {
                 },
               })}
               type="email"
-              className="p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter your email"
             />
             {errors.email && (
-              <p className="text-red-500 text-xs mt-1">
+              <p className="mt-1 text-red-500 text-sm">
                 {errors.email.message}
               </p>
             )}
           </div>
 
-          <div className="flex flex-col mb-5">
+          <div className="flex flex-col">
             <label
               htmlFor="password1"
-              className="text-sm font-semibold text-gray-700 mb-2"
+              className="text-sm font-medium text-gray-700 mb-1"
             >
               Password
             </label>
@@ -178,7 +180,7 @@ const Register = () => {
                   },
                 })}
                 type={showPassword ? "text" : "password"}
-                className="p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full"
+                className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full"
                 placeholder="Enter your password"
               />
               <button
@@ -203,16 +205,16 @@ const Register = () => {
               </button>
             </div>
             {errors.password1 && (
-              <p className="text-red-500 text-xs mt-1">
+              <p className="mt-1 text-red-500 text-sm">
                 {errors.password1.message}
               </p>
             )}
           </div>
 
-          <div className="flex flex-col mb-5">
+          <div className="flex flex-col">
             <label
               htmlFor="password2"
-              className="text-sm font-semibold text-gray-700 mb-2"
+              className="text-sm font-medium text-gray-700 mb-1"
             >
               Confirm Password
             </label>
@@ -221,15 +223,11 @@ const Register = () => {
                 id="password2"
                 {...register("password2", {
                   required: "Please confirm your password",
-                  minLength: {
-                    value: 8,
-                    message: "Minimum length is 8 characters",
-                  },
                   validate: (value) =>
                     value === password1 || "Passwords do not match",
                 })}
                 type={showPassword ? "text" : "password"}
-                className="p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full"
+                className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full"
                 placeholder="Confirm your password"
               />
               <button
@@ -254,36 +252,29 @@ const Register = () => {
               </button>
             </div>
             {errors.password2 && (
-              <p className="text-red-500 text-xs mt-1">
+              <p className="mt-1 text-red-500 text-sm">
                 {errors.password2.message}
               </p>
             )}
           </div>
 
-          <div className="mb-5">
+          <div className="flex justify-center">
             <ReCAPTCHA
               sitekey="6LctzSEqAAAAAEiugD06AIpRPrYhA-fQeKJo8WAL"
               onChange={onRecaptchaChange}
+              className="mt-4"
             />
           </div>
 
-          <button
-            type="submit"
-            className={`w-full py-3 px-4 text-white font-semibold rounded-md ${
-              loading
-                ? "bg-blue-300 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-600"
-            }`}
-            disabled={loading}
-          >
-            {loading ? "Registering..." : "Register"}
-          </button>
-
-          {loading && (
-            <div className="flex justify-center mt-4">
-              <div className="animate-spin h-6 w-6 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-            </div>
-          )}
+          <div>
+            <button
+              type="submit"
+              className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
+              disabled={loading}
+            >
+              {loading ? "Registering..." : "Register"}
+            </button>
+          </div>
         </form>
       </div>
     </div>

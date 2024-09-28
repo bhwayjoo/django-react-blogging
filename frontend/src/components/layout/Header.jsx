@@ -4,7 +4,6 @@ import { Menu, Search, X } from "lucide-react";
 import { useDispatch } from "react-redux";
 import customAxios from "../../services/api";
 import { resultShertchArticle } from "../../features/articleSlice";
-import HomeLoading from "../loading/HomeLoading";
 import { homeLoading } from "../../features/loadingSlice";
 
 const Header = () => {
@@ -23,17 +22,11 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Fetch both articles and user info when the page is opened
   const checkAuthStatus = useCallback(async () => {
     try {
       const resp = await customAxios.get("articles/articles/");
       dispatch(resultShertchArticle(resp.data));
       const response = await customAxios.get("account/userinfo/");
-
-      // Dispatch articles to the Redux store
-      dispatch(resultShertchArticle(resp.data));
-
-      // Update authentication state
       setAuthState({ connected: response.status === 200, loading: false });
     } catch (error) {
       console.error("Auth check failed:", error);
@@ -41,15 +34,12 @@ const Header = () => {
     }
   }, [dispatch]);
 
-  // Fetch tags and categories when the page loads
   const fetchTagsAndCategories = useCallback(async () => {
     try {
       const [tagsResponse, categoriesResponse] = await Promise.all([
-        customAxios.get("articles/tags/"), // Fetch tags
-        customAxios.get("articles/categories/"), // Fetch categories
+        customAxios.get("articles/tags/"),
+        customAxios.get("articles/categories/"),
       ]);
-
-      // Set fetched data to the state
       setTags(tagsResponse.data);
       setCategories(categoriesResponse.data);
     } catch (error) {
@@ -57,50 +47,61 @@ const Header = () => {
     }
   }, []);
 
-  // Ensure both auth status and data fetching are done when the page opens
   useEffect(() => {
     checkAuthStatus();
     fetchTagsAndCategories();
   }, [checkAuthStatus, fetchTagsAndCategories]);
 
-  // Handle the search functionality when the user submits a search request
   const handleSearch = useCallback(
     async (e) => {
       e.preventDefault();
+      dispatch(homeLoading(true));
       try {
         const { searchTerm, selectedCategory, selectedTag } = searchState;
 
-        // Fetch search results based on category, term, and tag
-        const response = await customAxios.get(
-          `articles/articles/?category=${selectedCategory}&keyword=${searchTerm}&tags=${selectedTag}`
-        );
+        const params = new URLSearchParams();
+        if (selectedCategory) params.append("category", selectedCategory);
+        if (searchTerm) params.append("keyword", searchTerm);
+        if (selectedTag) params.append("tags", selectedTag);
 
-        // Dispatch the results to the Redux store
+        const url = `articles/articles/?${params.toString()}`;
+        console.log("Search URL:", url);
+
+        const response = await customAxios.get(url);
+        console.log("Search response:", response.data);
+
         dispatch(resultShertchArticle(response.data));
-
-        // Navigate to the homepage with search results
         navigate("/", { state: { results: response.data } });
       } catch (error) {
         console.error("Search failed:", error);
+
+        if (error.response) {
+          console.error("Error data:", error.response.data);
+          console.error("Error status:", error.response.status);
+          console.error("Error headers:", error.response.headers);
+        } else if (error.request) {
+          console.error("Error request:", error.request);
+        } else {
+          console.error("Error message:", error.message);
+        }
+
+        // TODO: Implement user-facing error message
+      } finally {
+        dispatch(homeLoading(false));
       }
     },
     [searchState, dispatch, navigate]
   );
 
-  // Handle input changes in the search form
   const handleSearchInputChange = useCallback((e) => {
     const { name, value } = e.target;
     setSearchState((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  // Toggle the mobile menu state
   const toggleMenu = useCallback(() => {
     setIsMenuOpen((prev) => !prev);
   }, []);
 
-  // Display a loading spinner if the authentication state is still loading
-
-  // Render the header and search form
   return (
     <header className="bg-white shadow-md">
       <div className="container mx-auto px-4 py-4">

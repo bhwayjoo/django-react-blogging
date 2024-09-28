@@ -71,7 +71,7 @@ const Header = () => {
 
         // Fetch search results based on category, term, and tag
         const response = await customAxios.get(
-          `articles/articles/?category=${selectedCategory}&keyword=${searchTerm}&tag=${selectedTag}/`
+          `articles/articles/?category=${selectedCategory}&keyword=${searchTerm}&tags=${selectedTag}`
         );
 
         // Dispatch the results to the Redux store

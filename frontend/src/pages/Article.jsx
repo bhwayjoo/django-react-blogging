@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { User, Calendar, Tag, MessageCircle, ThumbsUp } from "lucide-react";
 import customAxios from "../services/api";
@@ -8,23 +8,48 @@ function Article() {
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
+  const [tagNames, setTagNames] = useState({});
+  const [categoryName, setCategoryName] = useState("");
   const { id } = useParams();
 
   useEffect(() => {
-    const fetchArticle = async () => {
+    const fetchArticleAndMetadata = async () => {
       try {
-        const response = await customAxios.get(`articles/articles/${id}/`);
-        const fetchedArticle = response.data;
+        const articleResponse = await customAxios.get(
+          `articles/articles/${id}/`
+        );
+        const fetchedArticle = articleResponse.data;
         setArticle(fetchedArticle);
         setComments(fetchedArticle.comments || []);
+
+        // Fetch category name
+        if (fetchedArticle.category) {
+          const categoryResponse = await customAxios.get(
+            `articles/categories/${fetchedArticle.category}/`
+          );
+          setCategoryName(categoryResponse.data.name);
+        }
+
+        // Fetch tag names
+        if (fetchedArticle.tags && fetchedArticle.tags.length > 0) {
+          const tagPromises = fetchedArticle.tags.map((tagId) =>
+            customAxios.get(`articles/tags/${tagId}/`)
+          );
+          const tagResponses = await Promise.all(tagPromises);
+          const newTagNames = {};
+          tagResponses.forEach((response) => {
+            newTagNames[response.data.id] = response.data.name;
+          });
+          setTagNames(newTagNames);
+        }
       } catch (error) {
-        console.error("Failed to fetch the article:", error);
+        console.error("Failed to fetch the article or metadata:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchArticle();
+    fetchArticleAndMetadata();
   }, [id]);
 
   const handleCommentSubmit = async (e) => {
@@ -62,8 +87,6 @@ function Article() {
   }
 
   const content = article.contents?.[0] || {};
-  const category = article.category || { name: "Uncategorized" };
-  const tags = article.tags || [];
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -83,7 +106,7 @@ function Article() {
             </span>
             <span className="flex items-center">
               <Tag size={16} className="mr-2" />
-              {category.name}
+              {categoryName || "Uncategorized"}
             </span>
           </div>
         </header>
@@ -96,13 +119,13 @@ function Article() {
 
         <footer className="bg-gray-50 p-6">
           <div className="flex flex-wrap gap-2 mb-4">
-            {tags.map((tag) => (
+            {article.tags?.map((tagId) => (
               <span
-                key={tag.id}
+                key={tagId}
                 className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded flex items-center"
               >
                 <Tag size={12} className="mr-1" />
-                {tag.name}
+                {tagNames[tagId] || `Tag ${tagId}`}
               </span>
             ))}
           </div>
@@ -152,7 +175,6 @@ function Article() {
                   onClick={() => handleCommentDelete(comment.id)}
                   className="mt-2 text-red-600 hover:text-red-800"
                 >
-                  {console.log(comment.user)}
                   Delete
                 </button>
               )}

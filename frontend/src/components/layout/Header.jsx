@@ -4,7 +4,8 @@ import { Menu, Search, X } from "lucide-react";
 import { useDispatch } from "react-redux";
 import customAxios from "../../services/api";
 import { resultShertchArticle } from "../../features/articleSlice";
-import { motion } from "framer-motion"; // Import Framer Motion
+import HomeLoading from "../loading/HomeLoading";
+import { homeLoading } from "../../features/loadingSlice";
 
 const Header = () => {
   const [authState, setAuthState] = useState({
@@ -98,17 +99,6 @@ const Header = () => {
   }, []);
 
   // Display a loading spinner if the authentication state is still loading
-  if (authState.loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <motion.div
-          className="h-10 w-10 rounded-full border-4 border-t-4 border-gray-300 border-t-blue-500"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-        />
-      </div>
-    );
-  }
 
   // Render the header and search form
   return (

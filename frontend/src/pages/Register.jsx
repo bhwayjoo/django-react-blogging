@@ -76,7 +76,7 @@ const Register = () => {
         ...data,
         recaptcha: recaptchaValue,
       });
-      navigate("/login");
+      navigate("/signin");
     } catch (error) {
       const errorData = error.response?.data;
       if (errorData) {

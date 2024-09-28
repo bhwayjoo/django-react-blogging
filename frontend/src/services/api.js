@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://127.0.0.1:8000/";
+const API_URL = "https://bloggingbackend-1ce6bf9fa1aa.herokuapp.com/";
 console.log(API_URL);
 const customAxios = axios.create({
   baseURL: API_URL,

@@ -13,6 +13,7 @@ import VerifyAcount from "./pages/VerifyAcount";
 import ProtectRouter from "./protect/ProtectRouter";
 import LogOutProtect from "./protect/LogOutProtect";
 import { store } from "./store/store";
+import NotFound from "./pages/NotFound ";
 
 function App() {
   return (
@@ -26,14 +27,19 @@ function App() {
             <Route path="/edit-article/:id" element={<EditArticle />} />
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
+
           {/* Use ProtectRouter as an element for a nested route */}
           <Route element={<LogOutProtect />}>
             <Route path="/signin" element={<Login />} />
             <Route path="/signup" element={<Register />} />
             <Route path="/verifyEmail/:tokenEmail" element={<VerifyAcount />} />
           </Route>
+
           <Route path="/article/:id" element={<Article />} />
           <Route path="/" element={<Home />} />
+
+          {/* Catch-all route for undefined paths */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />
       </Router>

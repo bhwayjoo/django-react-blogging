@@ -152,6 +152,7 @@ function Article() {
                   onClick={() => handleCommentDelete(comment.id)}
                   className="mt-2 text-red-600 hover:text-red-800"
                 >
+                  {console.log(comment.user)}
                   Delete
                 </button>
               )}

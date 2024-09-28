@@ -34,7 +34,7 @@ class UserRegistrationAPIView(APIView):
             user = serializer.save()
 
             # Send verification email
-            verification_link = f"{os.getenv('FRONTEND_URL')}account/verifyEmail/{user.email_verification_token}/"
+            verification_link = f"{os.getenv('FRONTEND_URL')}verifyEmail/{user.email_verification_token}/"
             send_mail(
                 'Verify your email',
                 f'Please click the following link to verify your email and activate your account: {verification_link}',

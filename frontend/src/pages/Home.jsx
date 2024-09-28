@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectArticles, selectLoading } from "../store/store";
 import { homeLoading } from "../features/loadingSlice";
@@ -11,21 +11,41 @@ function Home() {
   const dispatch = useDispatch();
   const articles = useSelector(selectArticles);
   const isLoading = useSelector(selectLoading);
+  const [tags, setTags] = useState({});
+  const [categories, setCategories] = useState({});
 
   useEffect(() => {
-    const fetchArticles = async () => {
+    const fetchData = async () => {
       dispatch(homeLoading(true));
       try {
-        const response = await customAxios.get("articles/articles/");
-        dispatch(resultShertchArticle(response.data));
+        const [articlesResponse, tagsResponse, categoriesResponse] =
+          await Promise.all([
+            customAxios.get("articles/articles/"),
+            customAxios.get("articles/tags/"),
+            customAxios.get("articles/categories/"),
+          ]);
+
+        dispatch(resultShertchArticle(articlesResponse.data));
+
+        const tagsMap = {};
+        tagsResponse.data.forEach((tag) => {
+          tagsMap[tag.id] = tag.name;
+        });
+        setTags(tagsMap);
+
+        const categoriesMap = {};
+        categoriesResponse.data.forEach((category) => {
+          categoriesMap[category.id] = category.name;
+        });
+        setCategories(categoriesMap);
       } catch (error) {
-        console.error("Failed to fetch articles:", error);
+        console.error("Failed to fetch data:", error);
       } finally {
         dispatch(homeLoading(false));
       }
     };
 
-    fetchArticles();
+    fetchData();
   }, [dispatch]);
 
   return (
@@ -39,7 +59,12 @@ function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {articles.length ? (
             articles.map((article) => (
-              <ArticleCard key={article.id} article={article} />
+              <ArticleCard
+                key={article.id}
+                article={article}
+                tags={tags}
+                categories={categories}
+              />
             ))
           ) : (
             <div>No articles found</div>

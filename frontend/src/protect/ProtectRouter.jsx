@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import customAxios from "../services/api";
+import LoadingPages from "../components/loading/LoadingPages";
 
 function ProtectRouter() {
   const [connected, setConnected] = useState(false);
@@ -24,7 +25,7 @@ function ProtectRouter() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingPages />;
   }
 
   return connected ? <Outlet /> : <Navigate to="/login" />;

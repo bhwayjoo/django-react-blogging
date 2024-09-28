@@ -1,31 +1,8 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import { Calendar, Tag, MessageCircle, User } from "lucide-react";
 import { Link } from "react-router-dom";
-import customAxios from "../../services/api";
 
-function TagCategoryFetcher({ id, type, render }) {
-  const [name, setName] = useState("");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const url = `/articles/${type}s/${id}/`; // Use relative URL since the base URL is already set in customAxios
-        const response = await customAxios.get(url); // Use customAxios to make the request
-        setName(response.data.name);
-      } catch (error) {
-        console.error(`Error fetching ${type} data:`, error);
-      }
-    };
-
-    if (id) {
-      fetchData();
-    }
-  }, [id, type]);
-
-  return render(name);
-}
-
-function ArticleCard({ article }) {
+function ArticleCard({ article, tags, categories }) {
   const content = article.contents?.[0] || {};
 
   return (
@@ -50,17 +27,13 @@ function ArticleCard({ article }) {
         </div>
         <div className="flex flex-wrap gap-2 mb-4">
           {article.tags?.map((tagId) => (
-            <TagCategoryFetcher
+            <span
               key={tagId}
-              id={tagId}
-              type="tag"
-              render={(name) => (
-                <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded flex items-center">
-                  <Tag size={16} className="mr-1" />
-                  {name || `Tag ${tagId}`}
-                </span>
-              )}
-            />
+              className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded flex items-center"
+            >
+              <Tag size={16} className="mr-1" />
+              {tags[tagId] || `Tag ${tagId}`}
+            </span>
           ))}
         </div>
         <div className="flex items-center justify-between text-sm text-gray-500">
@@ -68,15 +41,9 @@ function ArticleCard({ article }) {
             <MessageCircle size={16} className="mr-2" />
             {article.comments?.length || 0} comments
           </span>
-          <TagCategoryFetcher
-            id={article.category}
-            type="categorie"
-            render={(name) => (
-              <span className="bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded">
-                {name || "Uncategorized"}
-              </span>
-            )}
-          />
+          <span className="bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+            {categories[article.category] || "Uncategorized"}
+          </span>
         </div>
       </div>
     </div>

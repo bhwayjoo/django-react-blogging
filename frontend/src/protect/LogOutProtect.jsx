@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import customAxios from "../services/api"; // Assuming you have an API service
+import LoadingPages from "../components/loading/LoadingPages";
 
 function LogOutProtect() {
   const [connected, setConnected] = useState(false);
@@ -24,7 +25,7 @@ function LogOutProtect() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingPages />;
   }
 
   // If the user is authenticated (connected), redirect them to /portfolio

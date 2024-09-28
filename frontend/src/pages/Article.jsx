@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { User, Calendar, Tag, MessageCircle, ThumbsUp } from "lucide-react";
 import customAxios from "../services/api";
+import LoadingArticle from "../components/loading/LoadingArticle";
 
 function Article() {
   const [article, setArticle] = useState(null);
@@ -79,7 +80,7 @@ function Article() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingArticle />;
   }
 
   if (!article) {

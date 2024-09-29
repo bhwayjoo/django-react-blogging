@@ -1,14 +1,19 @@
-import { motion } from "framer-motion"; // Import Framer Motion
 
 function LoadingArticle() {
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <motion.div
-        className="h-10 w-10 rounded-full border-4 border-t-4 border-gray-300 border-t-blue-500"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-      />
+    <div className="bg-white rounded-lg shadow-md p-6 animate-pulse">
+    <div className="h-6 bg-gray-300 rounded-md w-1/2 mb-6"></div>
+
+    <div className="h-2 bg-gray-300 rounded-md w-full mb-4"></div>
+    <div className="h-2 bg-gray-300 rounded-md w-full mb-4"></div>
+    <div className="h-2 bg-gray-300 rounded-md w-1/4 mb-[10%]"></div>
+    <div className="h-3 bg-gray-300 rounded-md w-1/3 mb-4"></div>
+    <div className="h-3 bg-gray-300 rounded-md w-1/3 mb-4"></div>
+    <div className="flex justify-between items-center mt-2">
+      <div className="h-4 bg-gray-300 rounded-md w-1/5"></div>
+      <div className="h-4 bg-gray-300 rounded-md w-1/5"></div>
     </div>
+  </div>
   );
 }
 

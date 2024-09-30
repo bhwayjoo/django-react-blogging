@@ -7,10 +7,16 @@ import customAxios from "../services/api";
 const Register = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordC, setShowPasswordC] = useState(false);
   const [nonFieldError, setNonFieldError] = useState("");
   const [recaptchaValue, setRecaptchaValue] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = 'MyBlog | Register';
+    },[]);
+
+    
   const {
     register,
     handleSubmit,
@@ -96,9 +102,9 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg border border-gray-200">
-        <h2 className="text-3xl font-bold mb-6 text-center text-gray-900">
+    <div className="flex items-center justify-center min-h-screen my-[5%]  ">
+      <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg border-2 border-secondary">
+        <h2 className="text-3xl font-bold mb-6 text-center text-primary">
           Register
         </h2>
         <form onSubmit={handleSubmit(submitForm)} className="space-y-6">
@@ -171,7 +177,6 @@ const Register = () => {
             </label>
             <div className="relative">
               <input
-                id="password1"
                 {...register("password1", {
                   required: "Password is required",
                   minLength: {
@@ -188,20 +193,32 @@ const Register = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-0 flex items-center pr-3"
               >
-                <svg
-                  className="w-5 h-5 text-gray-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 4.5a7.5 7.5 0 015.558 12.628M5.633 12.572A7.5 7.5 0 0112 4.5m0 0a7.5 7.5 0 00-5.558 12.628M12 4.5v15"
-                  />
-                </svg>
+                {showPassword ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-6 text-primary"
+                  >
+                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                    <path
+                      fill-rule="evenodd"
+                      d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-6 text-primary"
+                  >
+                    <path d="M3.53 2.47a.75.75 0 0 0-1.06 1.06l18 18a.75.75 0 1 0 1.06-1.06l-18-18ZM22.676 12.553a11.249 11.249 0 0 1-2.631 4.31l-3.099-3.099a5.25 5.25 0 0 0-6.71-6.71L7.759 4.577a11.217 11.217 0 0 1 4.242-.827c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113Z" />
+                    <path d="M15.75 12c0 .18-.013.357-.037.53l-4.244-4.243A3.75 3.75 0 0 1 15.75 12ZM12.53 15.713l-4.243-4.244a3.75 3.75 0 0 0 4.244 4.243Z" />
+                    <path d="M6.75 12c0-.619.107-1.213.304-1.764l-3.1-3.1a11.25 11.25 0 0 0-2.63 4.31c-.12.362-.12.752 0 1.114 1.489 4.467 5.704 7.69 10.675 7.69 1.5 0 2.933-.294 4.242-.827l-2.477-2.477A5.25 5.25 0 0 1 6.75 12Z" />
+                  </svg>
+                )}
               </button>
             </div>
             {errors.password1 && (
@@ -220,35 +237,46 @@ const Register = () => {
             </label>
             <div className="relative">
               <input
-                id="password2"
                 {...register("password2", {
                   required: "Please confirm your password",
                   validate: (value) =>
                     value === password1 || "Passwords do not match",
                 })}
-                type={showPassword ? "text" : "password"}
+                type={showPasswordC ? "text" : "password"}
                 className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full"
                 placeholder="Confirm your password"
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => setShowPasswordC(!showPasswordC)}
                 className="absolute inset-y-0 right-0 flex items-center pr-3"
               >
-                <svg
-                  className="w-5 h-5 text-gray-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 4.5a7.5 7.5 0 015.558 12.628M5.633 12.572A7.5 7.5 0 0112 4.5m0 0a7.5 7.5 0 00-5.558 12.628M12 4.5v15"
-                  />
-                </svg>
+                {showPasswordC ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-6 text-primary"
+                  >
+                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                    <path
+                      fill-rule="evenodd"
+                      d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-6 text-primary"
+                  >
+                    <path d="M3.53 2.47a.75.75 0 0 0-1.06 1.06l18 18a.75.75 0 1 0 1.06-1.06l-18-18ZM22.676 12.553a11.249 11.249 0 0 1-2.631 4.31l-3.099-3.099a5.25 5.25 0 0 0-6.71-6.71L7.759 4.577a11.217 11.217 0 0 1 4.242-.827c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113Z" />
+                    <path d="M15.75 12c0 .18-.013.357-.037.53l-4.244-4.243A3.75 3.75 0 0 1 15.75 12ZM12.53 15.713l-4.243-4.244a3.75 3.75 0 0 0 4.244 4.243Z" />
+                    <path d="M6.75 12c0-.619.107-1.213.304-1.764l-3.1-3.1a11.25 11.25 0 0 0-2.63 4.31c-.12.362-.12.752 0 1.114 1.489 4.467 5.704 7.69 10.675 7.69 1.5 0 2.933-.294 4.242-.827l-2.477-2.477A5.25 5.25 0 0 1 6.75 12Z" />
+                  </svg>
+                )}
               </button>
             </div>
             {errors.password2 && (
@@ -272,7 +300,15 @@ const Register = () => {
               className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
               disabled={loading}
             >
-              {loading ? "Registering..." : "Register"}
+              {loading ? (
+                <div class="flex-col gap-4 w-full flex items-center justify-center">
+                  <div class="w-10 h-10 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-white rounded-full">
+                    <div class="w-8 h-8 border-4 border-transparent text-red-400 text-2xl animate-spin flex items-center justify-center border-t-primary rounded-full"></div>
+                  </div>
+                </div>
+              ) : (
+                "Register"
+              )}
             </button>
           </div>
         </form>

@@ -15,6 +15,8 @@ function Article() {
   const [categoryName, setCategoryName] = useState("");
   const { id } = useParams();
 
+      window.scrollTo(0, 0);
+  
   useEffect(() => {
     const fetchArticleAndMetadata = async () => {
       setLoadingArticle(true);  // Start loading state

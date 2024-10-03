@@ -108,7 +108,7 @@ const Header = () => {
         <div className="flex items-center justify-between mb-4">
           <Link
             to="/"
-            className="text-2xl font-bold text-gray-800 hover:text-gray-600 transition-colors"
+            className="text-3xl font-bold text-primary hover:text-gray-600 transition-colors"
           >
             MyBlog
           </Link>
@@ -143,7 +143,7 @@ const Header = () => {
             <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
             <button
               type="submit"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-4 py-1 rounded-full hover:bg-blue-600 transition-colors"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-primary text-white px-4 py-1 rounded-full hover:bg-blue-600 transition-colors"
             >
               Search
             </button>
@@ -181,7 +181,7 @@ const Header = () => {
 
       {isMenuOpen && (
         <div className="md:hidden bg-white py-4 px-4 border-t border-gray-200">
-          <nav className="flex flex-col space-y-2">
+          <nav className="flex flex-col space-y-2 ">
             <NavLinks connected={authState.connected} />
           </nav>
         </div>
@@ -192,7 +192,8 @@ const Header = () => {
 
 // eslint-disable-next-line react/display-name
 const NavLinks = React.memo(({ connected }) => {
-  const linkStyle = "text-gray-600 hover:text-blue-500 transition-colors";
+  const linkStyle =
+    "text-primary hover:text-blue-500 transition-colors font-semibold";
 
   const handleLogout = useCallback(async () => {
     try {
@@ -208,7 +209,7 @@ const NavLinks = React.memo(({ connected }) => {
     return (
       <>
         <Link to="/" className={linkStyle}>
-          Home
+        Accueil
         </Link>
         <Link to="/create-article" className={linkStyle}>
           Create Article
@@ -220,7 +221,7 @@ const NavLinks = React.memo(({ connected }) => {
           onClick={handleLogout}
           className="text-gray-600 hover:text-blue-500 transition-colors"
         >
-          Logout
+          SignOut
         </button>
       </>
     );
@@ -228,7 +229,7 @@ const NavLinks = React.memo(({ connected }) => {
   return (
     <>
       <Link to="/" className={linkStyle}>
-        Home
+      Accueil
       </Link>
       <Link to="/signin" className={linkStyle}>
         Sign In

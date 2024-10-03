@@ -2,6 +2,7 @@ import { useQuery } from "react-query";
 import ArticleCard from "../components/article/ArticleCard";
 import LoadingArticle from "../components/loading/LoadingArticle";
 import customAxios from "../services/api";
+import { useEffect } from "react";
 
 // Fetch articles
 const fetchArticles = async () => {
@@ -69,9 +70,12 @@ function Home() {
       }, {})
     : {};
 
+    useEffect(() => {
+      document.title = 'MyBlog | Accueil';
+      }, []);
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">
+      <h1 className="text-4xl font-bold mb-8 text-center text-primary">
         Latest Articles
       </h1>
       {isLoading ? (

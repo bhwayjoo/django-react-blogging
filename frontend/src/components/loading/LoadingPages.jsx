@@ -1,13 +1,20 @@
-import { motion } from "framer-motion"; // Import Framer Motion
 
 function LoadingPages() {
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <motion.div
-        className="h-10 w-10 rounded-full border-4 border-t-4 border-gray-300 border-t-blue-500"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-      />
+<div class="flex-col gap-4 w-full flex items-center justify-center">
+  <div
+    class="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-secondary rounded-full"
+  >
+    <div
+      class="w-16 h-16 border-4 border-transparent text-red-400 text-2xl animate-spin flex items-center justify-center border-t-primary rounded-full"
+    >
+       
+    </div>
+  </div>
+</div>
+
+
     </div>
   );
 }
